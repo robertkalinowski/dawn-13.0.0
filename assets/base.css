@@ -73,6 +73,26 @@
 
 /* base */
 
+.no-js:not(html) {
+  display: none !important;
+}
+
+html.no-js .no-js:not(html) {
+  display: block !important;
+}
+
+.no-js-inline {
+  display: none !important;
+}
+
+html.no-js .no-js-inline {
+  display: inline-block !important;
+}
+
+html.no-js .no-js-hidden {
+  display: none !important;
+}
+
 .page-width {
   max-width: var(--page-width);
   margin: 0 auto;
@@ -574,7 +594,6 @@ details > * {
   --duration-medium: 300ms;
   --duration-long: 500ms;
   --duration-extra-long: 600ms;
-  --duration-extra-longer: 750ms;
   --duration-extended: 3s;
   --ease-out-slow: cubic-bezier(0, 0, 0.3, 1);
   --animation-slide-in: slideIn var(--duration-extra-long) var(--ease-out-slow) forwards;
@@ -695,10 +714,17 @@ summary::-webkit-details-marker {
 }
 
 /* Fallback - for browsers that don't support :focus-visible, a fallback is set for :focus */
-.focused {
+.focused,
+.no-js *:focus {
   outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
   outline-offset: 0.3rem;
   box-shadow: 0 0 0 0.3rem rgb(var(--color-background)), 0 0 0.5rem 0.4rem rgba(var(--color-foreground), 0.3);
+}
+
+/* Negate the fallback side-effect for browsers that support :focus-visible */
+.no-js *:focus:not(:focus-visible) {
+  outline: 0;
+  box-shadow: none;
 }
 
 /*
@@ -711,10 +737,16 @@ summary::-webkit-details-marker {
   box-shadow: 0 0 0.2rem 0 rgba(var(--color-foreground), 0.3);
 }
 
-.focused.focus-inset {
+.focused.focus-inset,
+.no-js .focus-inset:focus {
   outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
   outline-offset: -0.2rem;
   box-shadow: 0 0 0.2rem 0 rgba(var(--color-foreground), 0.3);
+}
+
+.no-js .focus-inset:focus:not(:focus-visible) {
+  outline: 0;
+  box-shadow: none;
 }
 
 /*
@@ -733,10 +765,16 @@ summary::-webkit-details-marker {
   box-shadow: 0 0 0 1rem rgb(var(--color-background)), 0 0 0.2rem 1.2rem rgba(var(--color-foreground), 0.3);
 }
 
-.focus-offset.focused {
+.focus-offset.focused,
+.no-js .focus-offset:focus {
   outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
   outline-offset: 1rem;
   box-shadow: 0 0 0 1rem rgb(var(--color-background)), 0 0 0.2rem 1.2rem rgba(var(--color-foreground), 0.3);
+}
+
+.no-js .focus-offset:focus:not(:focus-visible) {
+  outline: 0;
+  box-shadow: none;
 }
 
 /* component-title */
@@ -1999,12 +2037,32 @@ product-info .loading__spinner:not(.hidden) ~ *,
   list-style-type: none;
 }
 
+.no-js details[open] .modal__toggle {
+  position: absolute;
+  z-index: 5;
+}
+
 .modal__toggle-close {
   display: none;
 }
 
+.no-js details[open] svg.modal__toggle-close {
+  display: flex;
+  z-index: 1;
+  height: 1.7rem;
+  width: 1.7rem;
+}
+
 .modal__toggle-open {
   display: flex;
+}
+
+.no-js details[open] .modal__toggle-open {
+  display: none;
+}
+
+.no-js .modal__close-button.link {
+  display: none;
 }
 
 .modal__close-button.link {
@@ -2308,6 +2366,10 @@ product-info .loading__spinner:not(.hidden) ~ *,
 
 .shopify-section-group-header-group {
   z-index: 4;
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 0;
 }
 
 .section-header ~ .shopify-section-group-header-group {
@@ -2323,6 +2385,7 @@ product-info .loading__spinner:not(.hidden) ~ *,
 
 .header-wrapper--border-bottom {
   border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
+  padding-top: 35px !important;
 }
 
 .header {
@@ -2330,6 +2393,7 @@ product-info .loading__spinner:not(.hidden) ~ *,
   grid-template-areas: 'left-icons heading icons';
   grid-template-columns: 1fr 2fr 1fr;
   align-items: center;
+  max-width: 100% !important;
 }
 
 @media screen and (max-width: 749px) {
@@ -2545,10 +2609,6 @@ product-info .loading__spinner:not(.hidden) ~ *,
   background: rgba(var(--color-foreground), 0.5);
 }
 
-.header__icon--account shop-user-avatar {
-  --shop-avatar-size: 2.8rem;
-}
-
 /* Search */
 menu-drawer + .header__search {
   display: none;
@@ -2596,6 +2656,10 @@ menu-drawer + .header__search {
   }
 }
 
+.no-js .predictive-search {
+  display: none;
+}
+
 details[open] > .search-modal {
   opacity: 1;
   animation: animateMenuOpen var(--duration-default) ease;
@@ -2613,6 +2677,11 @@ details[open] .modal-overlay::after {
   left: 0;
   right: 0;
   height: 100vh;
+}
+
+.no-js details[open] > .header__icon--search {
+  top: 1rem;
+  right: 0.5rem;
 }
 
 .search-modal {
@@ -2706,6 +2775,7 @@ details[open] > .header__submenu {
   animation: animateMenuOpen var(--duration-default) ease;
   animation-fill-mode: forwards;
   z-index: 1;
+  background: #fff !important;
 }
 
 @media (prefers-reduced-motion) {
@@ -2811,9 +2881,17 @@ details[open] > .header__menu-item .icon-caret {
 }
 
 .header__submenu .header__submenu {
-  background-color: rgba(var(--color-foreground), 0.03);
+  /*background-color: rgba(var(--color-foreground), 0.03);
   padding: 1rem 0;
-  margin: 1rem 0;
+  margin: 1rem 0;*/
+  border-radius: var(--popup-corner-radius);
+  border-color: rgba(var(--color-foreground), var(--popup-border-opacity));
+  border-style: solid;
+  border-width: var(--popup-border-width);
+  box-shadow: var(--popup-shadow-horizontal-offset) var(--popup-shadow-vertical-offset) var(--popup-shadow-blur-radius) rgba(var(--color-shadow), var(--popup-shadow-opacity));
+  z-index: -1;
+  min-width: 100%;
+  width: 20rem;
 }
 
 .header__submenu .header__menu-item:after {
@@ -2843,6 +2921,13 @@ header-menu > details,
 details-disclosure > details {
   position: relative;
 }
+
+nav > ul > li > header-menu > details > ul > li > details > ul{
+  position: fixed;
+  left: 100%;
+  top: 0;
+}
+
 
 @keyframes animateMenuOpen {
   0% {
@@ -3453,4 +3538,13 @@ details-disclosure > details {
   .animate--hover-vertical-lift .button:not([disabled]).button--secondary:hover:after {
     --border-offset: 0px; /* Prevent the border from growing on buttons when this effect is on. */
   }
+}
+
+#HeaderMenu-promocje{
+  color: #ff1fff;
+  font-weight: bold;
+}
+
+.list-menu--inline {
+  align-items: baseline !important;
 }

@@ -28,3 +28,12 @@
   width: 10rem;
   padding: 0.5rem;
 }
+@media only screen and (min-width: 750px){
+  .mega-menu .mega-menu__list--condensed {
+      display: grid;
+  }
+  .mega-menu[open] .mega-menu__content {
+      opacity: 0.9;
+      transform: translateY(0);
+  }
+}
